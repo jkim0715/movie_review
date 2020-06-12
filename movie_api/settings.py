@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'accounts',
     'reviews',
     'django_extensions',
+    #cors
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
