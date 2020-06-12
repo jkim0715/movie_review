@@ -55,6 +55,8 @@ MOVIE_GENRE_URL = 'https://api.themoviedb.org/3/genre/movie/list?api_key=4aa6196
 # with open('genredata.json', 'w') as fp:
 #     json.dump(genre_arr, fp)
 # https://api.themoviedb.org/3/movie/now_playing?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=en-US&page=1
+# 
+# https://api.themoviedb.org/3/find/뺑반?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&external_source=imdb_id
 #영화 싹다 집어 넣기
 movie_list_arr=[]
 for i in range(1001,1002):
