@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import MovieSerializer,MovieListSerializer
-from .models import Movie
+from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer
+from .models import Movie, MovieComment
 # Create your views here.
 
 #1. API화면 -> api_view
@@ -28,8 +28,12 @@ def search(request,movie_title):
     if Movie.objects.filter(title=movie_title).exists():
         # print('ddddd')
         movie = Movie.objects.filter(title=movie_title)
-        print(movie)
         serializer = MovieSerializer(movie[0])
-        print(serializer)
         return Response(serializer.data)
     
+@api_view(['GET'])
+def moviecomment(request):
+    moviecomment = MovieComment.objects.all()
+    serializer = MovieCommentSerializer(moviecomment)
+    return Response(serializer.data)
+

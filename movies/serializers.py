@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie
+from .models import Movie, MovieComment
 from accounts.serializers import UserSerializer
 #게시글 목록
 class MovieListSerializer(serializers.ModelSerializer):
@@ -16,3 +16,9 @@ class MovieSerializer(serializers.ModelSerializer):
         model = Movie
         fields ="__all__"
         read_only_fields = ['id']
+
+class MovieCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=False) # is_valid()에서 유무 검증 pass
+    class Meta:
+        model = MovieComment
+        fields =['id','title','rate','user']
