@@ -49,11 +49,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'requests',
-
     'movies',
     'accounts',
     'reviews',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -149,3 +148,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+
+#fixtures
+FIXTURE_DIRS = (
+   '/movies/fixtures/',
+)
