@@ -18,7 +18,7 @@ class MovieSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 class MovieCommentSerializer(serializers.ModelSerializer):
-    movie = MovieSerializer
+    movie = MovieSerializer(required=False)
     user = UserSerializer(required=False) # is_valid()에서 유무 검증 pass
     class Meta:
         model = MovieComment
