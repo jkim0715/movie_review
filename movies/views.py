@@ -19,5 +19,17 @@ def index(request):
 @api_view(['GET'])
 def detail(request,movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
+    # movie = Movie.objects.filter(pk=movie_id)
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def search(request,movie_title):
+    if Movie.objects.filter(title=movie_title).exists():
+        # print('ddddd')
+        movie = Movie.objects.filter(title=movie_title)
+        print(movie)
+        serializer = MovieSerializer(movie[0])
+        print(serializer)
+        return Response(serializer.data)
+    
