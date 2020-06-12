@@ -15,21 +15,9 @@ def index(request):
     serializer = MovieListSerializer(movies, many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create(request):
-    serializer = MovieSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(user = request.user) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
-        return Response(serializer.data)
-    return ''
-# 글 쓰는 사람 -> 장고 바깥 (Vue CLI)
-# 글 쓰는 사람이, 글을 쓸 때 '내가 누구다!' 라는 정보를 함께 보낼 것. 'geunje', 'pwd123'
-# Token이라는 것을 만들어서 보낼 것임.
-#
 
 @api_view(['GET'])
-def detail(request,article_id):
-    movie = get_object_or_404(Movie, pk=article_id)
+def detail(request,movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
