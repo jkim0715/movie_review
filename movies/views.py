@@ -18,15 +18,18 @@ def index(request):
 
 @api_view(['GET'])
 def detail(request,movie_title):
+    print(movie_title)
     if Movie.objects.filter(title=movie_title).exists():
+        # print('$2')
         movie = Movie.objects.filter(title=movie_title)
         serializer = MovieSerializer(movie[0])
     else:
-        url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query=%EB%BA%91%EB%B0%98&page=1'
+        url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query={movie_title}'
         res = requests.get(url).json()
         movie_data = res.get("results")[0]
         genre = Genre()
         movie = Movie.objects.create(
+            id=movie_data.get("id"),
             title=movie_data.get("title"),
             original_title=movie_data.get("original_title"),
             release_date=movie_data.get("release_date"),
