@@ -6,7 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.settings import api_settings
 
 
-from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer
+from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer, GenreSerializer
 from .models import Movie, MovieComment ,Genre
 import requests
 # Create your views here.
@@ -82,3 +82,10 @@ def createmoviecomment(request,movie_title):
         serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
     return ''
+
+# 장르데이터 받는거 
+@api_view(['GET'])
+def findgenre(request):
+    genre = Genre.objects.all()
+    serializer = GenreSerializer(genre,many=True)
+    return Response(serializer.data)

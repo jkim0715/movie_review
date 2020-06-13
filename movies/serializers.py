@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, MovieComment
+from .models import Movie, MovieComment, Genre
 from accounts.serializers import UserSerializer
 #게시글 목록
 class MovieListSerializer(serializers.ModelSerializer):
@@ -23,3 +23,8 @@ class MovieCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovieComment
         fields =['id','title','rate','user']
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = "__all__"
