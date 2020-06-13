@@ -2,19 +2,27 @@ from django.shortcuts import render,get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.settings import api_settings
+
 
 from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer
 from .models import Movie, MovieComment ,Genre
 import requests
 # Create your views here.
 
+
+
+
 #1. API화면 -> api_view
 #2. 사용자에게 응답을 해주는 도구 -> Response
 @api_view(['GET'])
 def index(request):
+    paginator = PageNumberPagination()
     movies = Movie.objects.all()
-    serializer = MovieListSerializer(movies, many=True)
-    return Response(serializer.data)
+    page = paginator.paginate_queryset(movies,request)
+    serializer = MovieListSerializer(page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 def detail(request,movie_title):
