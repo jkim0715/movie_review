@@ -5,7 +5,7 @@ from accounts.serializers import UserSerializer
 class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields =['id','title']
+        fields =['id','title','vote_average','poster_path','backdrop_path']
 
 
 #게시글 상세정보

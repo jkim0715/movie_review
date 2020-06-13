@@ -25,7 +25,15 @@ def index(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-def detail(request,movie_title):
+def detail(request,movie_id):
+    movie = get_object_or_404(Movie,pk=movie_id)
+    serializer = MovieSerializer(movie)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def search(request,movie_title):
     print(movie_title)
     if Movie.objects.filter(title=movie_title).exists():
         # print('$2')
