@@ -2,31 +2,42 @@ from django.shortcuts import render,get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.settings import api_settings
+
 
 from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer
 from .models import Movie, MovieComment ,Genre
 import requests
 # Create your views here.
 
+
+
+
 #1. API화면 -> api_view
 #2. 사용자에게 응답을 해주는 도구 -> Response
 @api_view(['GET'])
 def index(request):
+    paginator = PageNumberPagination()
     movies = Movie.objects.all()
-    serializer = MovieListSerializer(movies, many=True)
-    return Response(serializer.data)
+    page = paginator.paginate_queryset(movies,request)
+    serializer = MovieListSerializer(page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 def detail(request,movie_title):
+    print(movie_title)
     if Movie.objects.filter(title=movie_title).exists():
+        # print('$2')
         movie = Movie.objects.filter(title=movie_title)
         serializer = MovieSerializer(movie[0])
     else:
-        url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query=%EB%BA%91%EB%B0%98&page=1'
+        url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query={movie_title}'
         res = requests.get(url).json()
         movie_data = res.get("results")[0]
         genre = Genre()
         movie = Movie.objects.create(
+            id=movie_data.get("id"),
             title=movie_data.get("title"),
             original_title=movie_data.get("original_title"),
             release_date=movie_data.get("release_date"),
