@@ -65,8 +65,8 @@ def search(request,movie_title):
     
     
 @api_view(['GET'])
-def moviecomment(request):
-    moviecomment = MovieComment.objects.all()
+def moviecomment(request,movie_title):
+    moviecomment = MovieComment.objects.filter(title = movie_title)
     serializer = MovieCommentSerializer(moviecomment)
     return Response(serializer.data)
 

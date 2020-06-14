@@ -4,7 +4,7 @@ from movies.models import Movie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ReviewSerializer,ReviewListSerializer,CommentSerializer
+from .serializers import ReviewSerializer,ReviewListSerializer,CommentSerializer,CommentListSerializer
 # Create your views here.
 
 @api_view(['GET'])
@@ -22,9 +22,10 @@ def detail(request,movie_id):
 
 
 @api_view(['GET'])
-def comment_list(request):
-    reviews = Review.objects.all()
-    serializer = ReviewListSerializer(reviews, many=True)
+def comment_list(request, review_id):
+    review = get_object_or_404(Review, id = review_id)
+    comments = review.comment_set.all()
+    serializer = CommentListSerializer(comments, many=True)
     return Response(serializer.data)
 
 
