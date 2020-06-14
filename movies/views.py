@@ -6,7 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.settings import api_settings
 
 
-from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer
+from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer, GenreSerializer
 from .models import Movie, MovieComment ,Genre
 import requests
 # Create your views here.
@@ -25,7 +25,15 @@ def index(request):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-def detail(request,movie_title):
+def detail(request,movie_id):
+    movie = get_object_or_404(Movie,pk=movie_id)
+    serializer = MovieSerializer(movie)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def search(request,movie_title):
     print(movie_title)
     if Movie.objects.filter(title=movie_title).exists():
         # print('$2')
@@ -67,10 +75,19 @@ def moviecomment(request):
 # 영화ID도 필요하네
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) 
-def createmoviecomment(request,movie_title):
-    movie = get_object_or_404(Movie,title = movie_title)
+def createmoviecomment(request,movie_id):
+    #  form data 로 보내야댐 
+    movie = get_object_or_404(Movie,id = movie_id)
     serializer = MovieCommentSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
+    # print(serializer)
     return ''
+
+# 장르데이터 받는거 
+@api_view(['GET'])
+def findgenre(request):
+    genre = Genre.objects.all()
+    serializer = GenreSerializer(genre,many=True)
+    return Response(serializer.data)
