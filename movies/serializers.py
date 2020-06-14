@@ -22,7 +22,7 @@ class MovieCommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False) # is_valid()에서 유무 검증 pass
     class Meta:
         model = MovieComment
-        fields =['id','title','rate','user']
+        fields =['id','title','rate','user','movie']
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:

@@ -75,12 +75,14 @@ def moviecomment(request):
 # 영화ID도 필요하네
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) 
-def createmoviecomment(request,movie_title):
-    movie = get_object_or_404(Movie,title = movie_title)
+def createmoviecomment(request,movie_id):
+    #  form data 로 보내야댐 
+    movie = get_object_or_404(Movie,id = movie_id)
     serializer = MovieCommentSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
+    # print(serializer)
     return ''
 
 # 장르데이터 받는거 
