@@ -29,9 +29,9 @@ def comment_list(request):
 
 
 @api_view(['GET'])
-def comment_detail(request,movie_id):
-    review = get_object_or_404(Review, pk=movie_id)
-    serializer = CommentSerializer(review)
+def comment_detail(request,comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    serializer = CommentSerializer(Comment)
     return Response(serializer.data)
 
 @api_view(['POST'])
