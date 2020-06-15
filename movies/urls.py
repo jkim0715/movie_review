@@ -10,4 +10,5 @@ urlpatterns = [
   path('moviecomment/<int:movie_id>/', views.moviecomment), #영화 한줄평 리스트
   path('moviecomment/<int:movie_id>/create', views.createmoviecomment), #영화 한줄평 작성
   path('genre/',views.findgenre), #모든 영화장르 
+  path('getlikemovies/', views.get_like_movies), #좋아요 누른 영화들 가져오기 
 ]

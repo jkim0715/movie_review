@@ -127,3 +127,11 @@ def like(request, movie_id):
         movie.like_users.add(request.user)
     return HttpResponse(status= 200)
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_like_movies(request):
+    print(request.user) 
+    user = request.user
+    movies = user.like_movies.all()
+    serializer = MovieListSerializer(movies, many=True)
+    return Response(serializer.data)
