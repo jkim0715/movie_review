@@ -90,6 +90,9 @@ def createmoviecomment(request,movie_id):
     #  좋아요도 movie.like user ? 이건 다른 테이블이라 이렇게 하면 안될거같은데? 
     serializer = MovieCommentSerializer(data=request.data)
     if serializer.is_valid():
+        rate = int(request.data.get('rate'))
+        movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count+1)
+        movie.save()
         serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
     # print(serializer)
@@ -124,3 +127,11 @@ def like(request, movie_id):
         movie.like_users.add(request.user)
     return HttpResponse(status= 200)
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_like_movies(request):
+    print(request.user) 
+    user = request.user
+    movies = user.like_movies.all()
+    serializer = MovieListSerializer(movies, many=True)
+    return Response(serializer.data)
