@@ -95,3 +95,10 @@ def findgenre(request):
     genre = Genre.objects.all()
     serializer = GenreSerializer(genre,many=True)
     return Response(serializer.data)
+
+# 선호장르
+@api_view(['GET'])
+def findmoviesbygenre(request):
+    print(request.data)
+    return ''
+    

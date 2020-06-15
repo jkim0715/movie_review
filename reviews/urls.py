@@ -2,10 +2,9 @@ from django.urls import path
 from . import views
 urlpatterns = [
   ## 영화 리뷰 http://localhost:8000/reviews/
-  path('<int:movie_id>', views.index), #리뷰 리스트 
+  path('', views.index), #리뷰 리스트 
   path('detail/<int:review_id>/', views.detail), #영화 리뷰 디테일
-  path('create/<int:movie_id>/', views.createreview), #영화리뷰 만들기
-
+  path('create/', views.createreview), #영화리뷰 만들기
   path('delete/<int:review_id>/', views.deletereview),
 
   ## 영화 코멘트 http://localhost:8000/reviews/

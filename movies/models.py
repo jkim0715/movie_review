@@ -5,6 +5,7 @@ from django.conf import settings
 # Create your models here.
 class Genre(models.Model):
     name = models.CharField(max_length=255)
+    
 
 
 class Movie(models.Model):

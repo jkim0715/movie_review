@@ -62,17 +62,16 @@ def updatecomment(request, comment_id):
 #Review CRUD
 
 @api_view(['GET'])
-def detail(request,movie_id):
-    review = get_object_or_404(Review, pk=movie_id)
+def detail(request,review_id):
+    review = Review.objects.all()
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
 
 @api_view(['POST'])
-def createreview(request,movie_id):
-    movie = get_object_or_404(Movie, id = movie_id)
+def createreview(request):
     serializer = ReviewSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
+        serializer.save(user = request.user) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
     return ''
 
@@ -86,11 +85,9 @@ def deletereview(request, review_id):
 def updatereview(request, review_id):
     review = get_object_or_404(Review, id= review_id)
     if request.user == review.user:
-
         serializer = ReviewSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save(user = request.user, review = review)
         return Response(serializer.data)
     else:
-
         return HttpResponse(status=403)
