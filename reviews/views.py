@@ -10,6 +10,7 @@ from .serializers import ReviewSerializer,ReviewListSerializer,CommentSerializer
 
 @api_view(['GET'])
 def index(request):
+    print('hello Reviews')
     reviews = Review.objects.all()
     serializer = ReviewListSerializer(reviews, many=True)
     return Response(serializer.data)
@@ -69,14 +70,20 @@ def detail(request,review_id):
 
 @api_view(['POST'])
 def createreview(request):
+    print(request.data)
     serializer = ReviewSerializer(data=request.data)
+    print(request.user)
     if serializer.is_valid():
+        print('helloddd')
         serializer.save(user = request.user) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
-    return ''
+    else:
+        print('응?')
+        return HttpResponse(status=500)
 
 @api_view(['POST'])
 def deletereview(request, review_id):
+   print('heel')
    review = get_object_or_404(Review, id = review_id)
    review.delete()
    return HttpResponse(status=200)
