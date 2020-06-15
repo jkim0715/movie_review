@@ -99,6 +99,7 @@ def findgenre(request):
 # 선호장르
 @api_view(['GET'])
 def findmoviesbygenre(request):
+    print('ihi')
     print(request.data)
     return ''
 
