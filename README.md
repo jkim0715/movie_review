@@ -2,16 +2,28 @@
 
 
 
-**DB**
+### Movie List
 
-```python
-import json
+Request
 
-dict = {"member #002":{"first name": "John", "last name": "Doe", "age": 34},
-        "member #003":{"first name": "Elijah", "last name": "Baley", "age": 27},
-        "member #001":{"first name": "Jane", "last name": "Doe", "age": 42}}
+`GET /movies/`
 
-with open('data.json', 'w') as fp:
-    json.dump(dict, fp)
+Params
+
+`pages` : 1 ~ 1112
+
+response
+
+```
+content-type = application/json
 ```
 
+
+
+
+
+### Movie Detail 
+
+Request
+
+`GET /movies/detail/{movie_title}

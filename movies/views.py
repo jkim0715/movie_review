@@ -34,33 +34,35 @@ def detail(request,movie_id):
 
 @api_view(['GET'])
 def search(request,movie_title):
-    print(movie_title)
     if Movie.objects.filter(title=movie_title).exists():
-        # print('$2')
         movie = Movie.objects.filter(title=movie_title)
         serializer = MovieSerializer(movie[0])
     else:# 이거 자료 없는거 뜨면 로직 자체가 멈춤 다음것도 왜인지 안된다?
         url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query={movie_title}'
         res = requests.get(url).json()
         movie_data = res.get("results")[0]
-        genre = Genre()
-        movie = Movie.objects.create(
-            id=movie_data.get("id"),
-            title=movie_data.get("title"),
-            original_title=movie_data.get("original_title"),
-            release_date=movie_data.get("release_date"),
-            popularity=movie_data.get("popularity"),
-            vote_count=movie_data.get("vote_count"),
-            vote_average=movie_data.get("vote_average"),
-            adult=movie_data.get("adult"),
-            overview=movie_data.get("overview"),
-            original_language=movie_data.get("original_language"),
-            poster_path=movie_data.get("poster_path"),
-            backdrop_path=movie_data.get("backdrop_path"),
-        )
-        movie.genres.set(movie_data.get("genre_ids"))
-        movie.save()
-        serializer = MovieSerializer(movie)
+        if Movie.objects.filter(id=movie_data.get("id")).exists():
+            movie = Movie.objects.filter(id=movie_data.get("id"))
+            serializer = MovieSerializer(movie[0])
+        else:
+            genre = Genre()
+            movie = Movie.objects.create(
+                id=movie_data.get("id"),
+                title=movie_data.get("title"),
+                original_title=movie_data.get("original_title"),
+                release_date=movie_data.get("release_date"),
+                popularity=movie_data.get("popularity"),
+                vote_count=movie_data.get("vote_count"),
+                vote_average=movie_data.get("vote_average"),
+                adult=movie_data.get("adult"),
+                overview=movie_data.get("overview"),
+                original_language=movie_data.get("original_language"),
+                poster_path=movie_data.get("poster_path"),
+                backdrop_path=movie_data.get("backdrop_path"),
+            )
+            movie.genres.set(movie_data.get("genre_ids"))
+            movie.save()
+            serializer = MovieSerializer(movie)
     return Response(serializer.data)
     
     
