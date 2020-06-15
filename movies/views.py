@@ -9,7 +9,13 @@ from django.http import HttpResponse
 from .serializers import MovieSerializer,MovieListSerializer , MovieCommentSerializer, GenreSerializer
 from .models import Movie, MovieComment ,Genre
 import requests
+
+import operator
+from django.db.models import Q
+from functools import reduce
 # Create your views here.
+
+
 
 
 
@@ -99,9 +105,14 @@ def findgenre(request):
 # 선호장르
 @api_view(['GET'])
 def findmoviesbygenre(request):
-    print('ihi')
-    print(request.data)
-    return ''
+    paginator = PageNumberPagination()
+    arr = []
+    for i in request.query_params:
+        arr.append(request.query_params[i])
+    movies = Movie.objects.filter(genres__in=arr)
+    page = paginator.paginate_queryset(movies,request)
+    serializer = MovieListSerializer(page, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 #영화 좋아요
 @api_view(['POST'])
