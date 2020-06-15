@@ -91,3 +91,21 @@ def updatereview(request, review_id):
         return Response(serializer.data)
     else:
         return HttpResponse(status=403)
+
+@api_view(['POST'])
+def likereview(request, review_id):
+    review = get_object_or_404(Review,id=review_id)
+    if review.like_user.filter(pk=request.user.id).exists():
+        review.like_user.remove(request.user)
+    else:
+        review.like_user.add(request.user)
+    return HttpResponse(status= 200)
+    
+@api_view(['POST'])
+def likecomment(request, comment_id):
+    comment = get_object_or_404(Comment,id=comment_id)
+    if comment.like_user.filter(pk=request.user.id).exists():
+        comment.like_user.remove(request.user)
+    else:
+        comment.like_user.add(request.user)
+    return HttpResponse(status= 200)

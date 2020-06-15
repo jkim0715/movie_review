@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
   path('', views.index),
+  path('like/<int:movie_id>/', views.like), #영화 좋아요 누르기 
   path('searchmovie/<str:movie_title>/', views.search), #영화 이름을 찾기
   path('searchmovie/genres/', views.findmoviesbygenre), #영화검색 by장르
   path('detail/<int:movie_id>/', views.detail), #영화 디테일 
