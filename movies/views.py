@@ -117,10 +117,10 @@ def findmoviesbygenre(request):
 #영화 좋아요
 @api_view(['POST'])
 def like(request, movie_id):
-    post = get_object_or_404(Movie,id=movie_id)
-    if post.like_user.filter(pk=request.user.id).exists():
-        post.like_user.remove(request.user)
+    movie = get_object_or_404(Movie,id=movie_id)
+    if movie.like_users.filter(pk=request.user.id).exists():
+        movie.like_users.remove(request.user)
     else:
-        post.like_user.add(request.user)
+        movie.like_users.add(request.user)
     return HttpResponse(status= 200)
     
