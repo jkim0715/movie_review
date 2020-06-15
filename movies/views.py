@@ -37,7 +37,7 @@ def search(request,movie_title):
     if Movie.objects.filter(title=movie_title).exists():
         movie = Movie.objects.filter(title=movie_title)
         serializer = MovieSerializer(movie[0])
-    else:
+    else:# 이거 자료 없는거 뜨면 로직 자체가 멈춤 다음것도 왜인지 안된다?
         url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query={movie_title}'
         res = requests.get(url).json()
         movie_data = res.get("results")[0]
@@ -67,9 +67,9 @@ def search(request,movie_title):
     
     
 @api_view(['GET'])
-def moviecomment(request,movie_title):
-    moviecomment = MovieComment.objects.filter(title = movie_title)
-    serializer = MovieCommentSerializer(moviecomment)
+def moviecomment(request,movie_id):
+    moviecomment = MovieComment.objects.filter(movie_id=movie_id)
+    serializer = MovieCommentSerializer(moviecomment,many=True)
     return Response(serializer.data)
 
 ## 한줄평 작성 
@@ -80,6 +80,8 @@ def moviecomment(request,movie_title):
 def createmoviecomment(request,movie_id):
     #  form data 로 보내야댐 
     movie = get_object_or_404(Movie,id = movie_id)
+    # movie.vote_count +=1 이렇게 되나 
+    #  좋아요도 movie.like user ? 이건 다른 테이블이라 이렇게 하면 안될거같은데? 
     serializer = MovieCommentSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
