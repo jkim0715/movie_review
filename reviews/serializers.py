@@ -11,7 +11,6 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    movie = MovieSerializer(required=False)
     user = UserSerializer(required=False)
     class Meta:
         model = Review
