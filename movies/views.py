@@ -180,8 +180,10 @@ def add_movie(request,movie_id):
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
   
+
+
+@api_view(['GET'])  
 def recommend(request):
-    print(request.user)
     if len(request.user.like_movies.values('genres')) ==0 :
     ## 다른거 좋아요 누른 적 있으면 같은 장르.
         temp = datetime.now().second % 19
@@ -193,3 +195,13 @@ def recommend(request):
     movies =Movie.objects.filter(genres=genre).order_by('-vote_average')[0:5]
     serializer = MovieSerializer(movies, many =True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def deletemoviecomment(request, moviecomment_id):
+    moviecomment = get_object_or_404(MovieComment, id=moviecomment_id)
+    if request.user == moviecomment.user:
+        moviecomment.delete()
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=401)

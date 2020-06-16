@@ -73,23 +73,22 @@ def detail(request,review_id):
 
 @api_view(['POST'])
 def createreview(request):
-    print(request.data)
     serializer = ReviewSerializer(data=request.data)
-    print(request.user)
     if serializer.is_valid():
-        print('helloddd')
         serializer.save(user = request.user) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
     else:
-        print('응?')
         return HttpResponse(status=500)
 
 @api_view(['POST'])
 def deletereview(request, review_id):
-   print('heel')
-   review = get_object_or_404(Review, id = review_id)
-   review.delete()
-   return HttpResponse(status=200)
+    review = get_object_or_404(Review, id = review_id)
+    if request.user == review.user:
+       review.delete()
+       return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=401)
+    
 
 @api_view(['POST'])
 def updatereview(request, review_id):
