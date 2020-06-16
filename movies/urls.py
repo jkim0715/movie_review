@@ -13,4 +13,5 @@ urlpatterns = [
   path('getlikemovies/', views.get_like_movies), #좋아요 누른 영화들 가져오기 
   path('add_movie/<int:movie_id>/', views.add_movie), #영화 id 기준 영화 추가하기 
   path('recommend/', views.recommend),
+  path('deletemoviecomment/<int:moviecomment_id>/', views.deletemoviecomment),
 ]
