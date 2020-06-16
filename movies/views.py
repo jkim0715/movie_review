@@ -147,34 +147,38 @@ def get_like_movies(request):
 
 @api_view(['GET'])
 def add_movie(request,movie_id):
-    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-Kr'
-    movie_data = requests.get(url).json()
-    genre = Genre()
-    movie = Movie.objects.create(
-        id=movie_data.get("id"),
-        title=movie_data.get("title"),
-        original_title=movie_data.get("original_title"),
-        release_date=movie_data.get("release_date"),
-        popularity=movie_data.get("popularity"),
-        vote_count=movie_data.get("vote_count"),
-        vote_average=movie_data.get("vote_average"),
-        adult=movie_data.get("adult"),
-        overview=movie_data.get("overview"),
-        original_language=movie_data.get("original_language"),
-        poster_path=movie_data.get("poster_path"),
-        backdrop_path=movie_data.get("backdrop_path"),
-    )
-    tmp=(movie_data.get("genres"))
-    tmp_list=[]
-    for i in tmp:
-        print(i)
-        tmp_list.append(i['id'])
+    if Movie.objects.filter(id=movie_id).exists():
+        print(있음)
+        pass
+    else:
+        url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-Kr'
+        movie_data = requests.get(url).json()
+        genre = Genre()
+        movie = Movie.objects.create(
+            id=movie_data.get("id"),
+            title=movie_data.get("title"),
+            original_title=movie_data.get("original_title"),
+            release_date=movie_data.get("release_date"),
+            popularity=movie_data.get("popularity"),
+            vote_count=movie_data.get("vote_count"),
+            vote_average=movie_data.get("vote_average"),
+            adult=movie_data.get("adult"),
+            overview=movie_data.get("overview"),
+            original_language=movie_data.get("original_language"),
+            poster_path=movie_data.get("poster_path"),
+            backdrop_path=movie_data.get("backdrop_path"),
+        )
+        tmp=(movie_data.get("genres"))
+        tmp_list=[]
+        for i in tmp:
+            print(i)
+            tmp_list.append(i['id'])
 
-    movie.genres.set(tmp_list)
-    # movie.genres.set(movie_data.get("genres").keys())
-    movie.save()
-    serializer = MovieSerializer(movie)
-    return Response(serializer.data)
+        movie.genres.set(tmp_list)
+        # movie.genres.set(movie_data.get("genres").keys())
+        movie.save()
+        serializer = MovieSerializer(movie)
+        return Response(serializer.data)
   
 def recommend(request):
     print(request.user)
