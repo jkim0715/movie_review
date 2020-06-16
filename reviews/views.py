@@ -34,9 +34,12 @@ def comment_detail(request,comment_id):
 
 @api_view(['POST'])
 def createcomment(request,review_id):
-    review = get_object_or_404(Review,title = review_id)
+    review = get_object_or_404(Review,id = review_id)
     serializer = CommentSerializer(data=request.data)
+    print('gege')
+    print(serializer)
     if serializer.is_valid():
+        print('ggg')
         serializer.save(user = request.user, review= review) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
         return Response(serializer.data)
     return ''
