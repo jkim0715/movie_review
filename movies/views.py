@@ -13,6 +13,9 @@ import requests
 import operator
 from django.db.models import Q
 from functools import reduce
+
+from datetime import datetime
+from django.db.models import Count
 # Create your views here.
 
 
@@ -88,14 +91,19 @@ def createmoviecomment(request,movie_id):
     movie = get_object_or_404(Movie,id = movie_id)
     # movie.vote_count +=1 이렇게 되나 
     #  좋아요도 movie.like user ? 이건 다른 테이블이라 이렇게 하면 안될거같은데? 
-    serializer = MovieCommentSerializer(data=request.data)
-    if serializer.is_valid():
-        rate = int(request.data.get('rate'))
-        movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count+1)
-        movie.save()
-        serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
-        return Response(serializer.data)
-    # print(serializer)
+    temp = movie.moviecomment_set.filter(user=request.user)
+    if temp:
+        return HttpResponse(status=403)
+    else:
+        serializer = MovieCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            rate = int(request.data.get('rate'))
+            movie.vote_count += 1
+            movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count)
+            movie.save()
+            serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
+            return Response(serializer.data)
+        # print(serializer)
     return ''
 
 # 장르데이터 받는거 
@@ -112,7 +120,7 @@ def findmoviesbygenre(request):
     arr = []
     for i in request.query_params:
         arr.append(request.query_params[i])
-    movies = Movie.objects.filter(genres__in=arr)
+    movies = Movie.objects.filter(genres__in=arr).order_by('-vote_average').distinct()
     page = paginator.paginate_queryset(movies,request)
     serializer = MovieListSerializer(page, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -166,4 +174,18 @@ def add_movie(request,movie_id):
     # movie.genres.set(movie_data.get("genres").keys())
     movie.save()
     serializer = MovieSerializer(movie)
+    return Response(serializer.data)
+  
+def recommend(request):
+    print(request.user)
+    if len(request.user.like_movies.values('genres')) ==0 :
+    ## 다른거 좋아요 누른 적 있으면 같은 장르.
+        temp = datetime.now().second % 19
+        arr= [10770,10752,10751,10749,10402,9648,878,99,80,53,37,36,35,28,27,18,16,14,12]
+        genre = get_object_or_404(Genre, pk=arr[temp])
+    else:
+        genre_id = request.user.like_movies.values('genres').annotate(count=Count('genres'))[0].get('genres')
+        genre = get_object_or_404(Genre, pk = genre_id)
+    movies =Movie.objects.filter(genres=genre).order_by('-vote_average')[0:5]
+    serializer = MovieSerializer(movies, many =True)
     return Response(serializer.data)
