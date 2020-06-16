@@ -29,7 +29,9 @@ class CommentListSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
+    review = ReviewSerializer(required=False)
+    like_user = serializers.PrimaryKeyRelatedField(queryset=UserSerializer, many=True, required=False)
     class Meta:
-        model = Review
+        model = Comment
         fields ="__all__"
         read_only_fields = ['id']
