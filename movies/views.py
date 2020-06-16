@@ -120,7 +120,7 @@ def findmoviesbygenre(request):
     arr = []
     for i in request.query_params:
         arr.append(request.query_params[i])
-    movies = Movie.objects.filter(genres__in=arr)
+    movies = Movie.objects.filter(genres__in=arr).order_by('-vote_average').distinct()
     page = paginator.paginate_queryset(movies,request)
     serializer = MovieListSerializer(page, many=True)
     return paginator.get_paginated_response(serializer.data)
@@ -151,12 +151,11 @@ def recommend(request):
     if len(request.user.like_movies.values('genres')) ==0 :
     ## 다른거 좋아요 누른 적 있으면 같은 장르.
         temp = datetime.now().second % 19
-        print(temp)
         arr= [10770,10752,10751,10749,10402,9648,878,99,80,53,37,36,35,28,27,18,16,14,12]
         genre = get_object_or_404(Genre, pk=arr[temp])
     else:
         genre_id = request.user.like_movies.values('genres').annotate(count=Count('genres'))[0].get('genres')
         genre = get_object_or_404(Genre, pk = genre_id)
-    movies =Movie.objects.filter(genres=genre)
+    movies =Movie.objects.filter(genres=genre).order_by('-vote_average')[0:5]
     serializer = MovieSerializer(movies, many =True)
     return Response(serializer.data)
