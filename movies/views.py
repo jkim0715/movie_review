@@ -94,8 +94,10 @@ def createmoviecomment(request,movie_id):
         serializer = MovieCommentSerializer(data=request.data)
         if serializer.is_valid():
             rate = int(request.data.get('rate'))
+            print(movie.vote_average )
             movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count+1)
             movie.vote_count += 1
+            print(movie.vote_average )
             movie.save()
             serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
             return Response(serializer.data)
@@ -129,7 +131,8 @@ def like(request, movie_id):
         movie.like_users.remove(request.user)
     else:
         movie.like_users.add(request.user)
-    return HttpResponse(status= 200)
+    serializer = MovieSerializer(movie)
+    return Response(serializer.data)
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -196,11 +199,12 @@ def recommend(request):
 def deletemoviecomment(request, moviecomment_id):
     moviecomment = get_object_or_404(MovieComment, id=moviecomment_id)
     movie= get_object_or_404(Movie, id = moviecomment.movie_id)
+    serializer = MovieSerializer(movie)
     if request.user == moviecomment.user:
         movie.vote_average = ((movie.vote_average*movie.vote_count)-moviecomment.rate)/(movie.vote_count - 1)
         movie.vote_count -=1
         movie.save()
         moviecomment.delete()
-        return HttpResponse(status=200)
+        return Response(serializer.data)
     else:
-        return HttpResponse(status=401)
+        return Response(serializer.data)
