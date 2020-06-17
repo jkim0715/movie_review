@@ -5,6 +5,7 @@ urlpatterns = [
   path('', views.index), #리뷰 리스트 
   path('detail/<int:review_id>/', views.detail), #영화 리뷰 디테일
   path('create/', views.createreview), #영화리뷰 만들기
+  path('update/<int:review_id>/', views.updatereview), #영화리뷰 만들기
   path('delete/<int:review_id>/', views.deletereview),
   path('reviewlike/<int:review_id>/', views.likereview), #커뮤니티 게시글 좋아요
 

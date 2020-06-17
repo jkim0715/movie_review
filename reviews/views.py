@@ -66,7 +66,7 @@ def updatecomment(request, comment_id):
 
 @api_view(['GET'])
 def detail(request,review_id):
-    review = Review.objects.all()
+    review = get_object_or_404(Review,id=review_id)
     serializer = ReviewSerializer(review)
     return Response(serializer.data)
 
@@ -93,18 +93,25 @@ def deletereview(request, review_id):
 def updatereview(request, review_id):
     review = get_object_or_404(Review, id= review_id)
     if request.user == review.user:
-        serializer = ReviewSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save(user = request.user, review = review)
-        return Response(serializer.data)
+        review.title=request.data['title']
+        review.content = request.data['content']
+        # serializer = ReviewSerializer( data = request.data)
+        # print(serializer)
+        review.save()
+        # if serializer.is_valid():
+        #     print(request.data)
+            # serializer.save(user = request.user, review = review)
+        return HttpResponse(status=200)
     else:
         return HttpResponse(status=403)
 
 @api_view(['POST'])
 def likereview(request, review_id):
     review = get_object_or_404(Review,id=review_id)
+    print('hi')
     if review.like_user.filter(pk=request.user.id).exists():
         review.like_user.remove(request.user)
+        print(4)
     else:
         review.like_user.add(request.user)
     return HttpResponse(status= 200)
