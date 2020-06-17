@@ -13,5 +13,6 @@ urlpatterns = [
   path('comment/<int:review_id>/' , views.comment_list), #리뷰에 딸려있는 코멘트 리스트 
   path('comment/detail/<int:comment_id>/' , views.comment_detail), #영화 리뷰코멘트
   path('comment/create/<int:review_id>/', views.createcomment), #영화 리뷰 코멘트 생성
+  path('comment/delete/<int:comment_id>/', views.deletecomment), #영화 리뷰 코멘트 삭제
   path('commentlike/<int:comment_id>/', views.likecomment), # 커뮤니티 댓글 좋아요
 ]
