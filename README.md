@@ -2,6 +2,26 @@
 
 
 
+### MOVIE
+
+| Method   | Request | Response |
+| -------- | ------- | -------- |
+| /movies/ |         |          |
+|          |         |          |
+|          |         |          |
+
+
+
+### REVIEW
+
+
+
+### ACCOUNT
+
+
+
+
+
 ### Movie List
 
 Request
