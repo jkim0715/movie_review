@@ -22,7 +22,8 @@ class Movie(models.Model):
     backdrop_path = models.CharField( max_length=255, null= True)
     genres = models.ManyToManyField(Genre, related_name='genre_movies')
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="like_movies")
-
+    def no_of_like_users(self):
+        return self.like_users.count()
 
 class MovieComment(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)

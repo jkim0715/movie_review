@@ -17,12 +17,6 @@ from functools import reduce
 from datetime import datetime
 from django.db.models import Count
 # Create your views here.
-
-
-
-
-
-
 #1. API화면 -> api_view
 #2. 사용자에게 응답을 해주는 도구 -> Response
 @api_view(['GET'])
@@ -36,6 +30,8 @@ def index(request):
 @api_view(['GET'])
 def detail(request,movie_id):
     movie = get_object_or_404(Movie,pk=movie_id)
+    print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+    print(movie.no_of_like_users())
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
@@ -98,8 +94,8 @@ def createmoviecomment(request,movie_id):
         serializer = MovieCommentSerializer(data=request.data)
         if serializer.is_valid():
             rate = int(request.data.get('rate'))
+            movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count+1)
             movie.vote_count += 1
-            movie.vote_average = (movie.vote_average*movie.vote_count +rate)/(movie.vote_count)
             movie.save()
             serializer.save(user = request.user, movie= movie) # NOT NULL CONSTRAINT FAILED (ID가 없을 때)
             return Response(serializer.data)
@@ -148,8 +144,7 @@ def get_like_movies(request):
 @api_view(['GET'])
 def add_movie(request,movie_id):
     if Movie.objects.filter(id=movie_id).exists():
-        print(있음)
-        pass
+        return HttpResponse(status=200)
     else:
         url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-Kr'
         movie_data = requests.get(url).json()
@@ -200,7 +195,11 @@ def recommend(request):
 @api_view(['POST'])
 def deletemoviecomment(request, moviecomment_id):
     moviecomment = get_object_or_404(MovieComment, id=moviecomment_id)
+    movie= get_object_or_404(Movie, id = moviecomment.movie_id)
     if request.user == moviecomment.user:
+        movie.vote_average = ((movie.vote_average*movie.vote_count)-moviecomment.rate)/(movie.vote_count - 1)
+        movie.vote_count -=1
+        movie.save()
         moviecomment.delete()
         return HttpResponse(status=200)
     else:
