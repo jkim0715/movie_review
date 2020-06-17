@@ -24,7 +24,7 @@ class CommentListSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
     class Meta:
         model = Review
-        fields =['id','title','user']
+        fields =['id','title','user','created_at']
 
 
 class CommentSerializer(serializers.ModelSerializer):
