@@ -20,7 +20,7 @@ from django.db.models import Count
 import os
 from decouple import config
 
-API_KEY= config('API_KEY')
+API_KEY=config('API_KEY')
 # Create your views here.
 #1. API화면 -> api_view
 #2. 사용자에게 응답을 해주는 도구 -> Response
