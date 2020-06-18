@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'movies',
     'accounts',
     'reviews',
-    'django_extensions',
     #cors
     'corsheaders'
 ]
