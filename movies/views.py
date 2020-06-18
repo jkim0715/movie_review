@@ -16,6 +16,10 @@ from functools import reduce
 
 from datetime import datetime
 from django.db.models import Count
+
+import os
+
+API_KEY= os.environ.get('API_KEY')
 # Create your views here.
 #1. API화면 -> api_view
 #2. 사용자에게 응답을 해주는 도구 -> Response
@@ -30,8 +34,6 @@ def index(request):
 @api_view(['GET'])
 def detail(request,movie_id):
     movie = get_object_or_404(Movie,pk=movie_id)
-    print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
-    print(movie.no_of_like_users())
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
@@ -43,7 +45,7 @@ def search(request,movie_title):
         movie = Movie.objects.filter(title=movie_title)
         serializer = MovieSerializer(movie[0])
     else:# 이거 자료 없는거 뜨면 로직 자체가 멈춤 다음것도 왜인지 안된다?
-        url = f'https://api.themoviedb.org/3/search/movie?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-K&query={movie_title}'
+        url = f'https://api.themoviedb.org/3/search/movie?api_key={API_KEY}&language=ko-K&query={movie_title}'
         res = requests.get(url).json()
         movie_data = res.get("results")[0]
         if Movie.objects.filter(id=movie_data.get("id")).exists():
@@ -149,7 +151,7 @@ def add_movie(request,movie_id):
     if Movie.objects.filter(id=movie_id).exists():
         return HttpResponse(status=200)
     else:
-        url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=4aa6196c39a63ef5473aa8c1e096c329&language=ko-Kr'
+        url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=ko-Kr'
         movie_data = requests.get(url).json()
         genre = Genre()
         movie = Movie.objects.create(
