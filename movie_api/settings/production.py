@@ -1,8 +1,8 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '.compute.amazonaws.com',
-    '3.34.162.209',
+    '13.125.144.255',
 ]
