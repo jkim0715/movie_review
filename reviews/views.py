@@ -19,6 +19,7 @@ def index(request):
 
 @api_view(['GET'])
 def comment_list(request, review_id):
+    print('hello')
     review = get_object_or_404(Review, id = review_id)
     comments = review.comment_set.all()
     serializer = CommentListSerializer(comments, many=True)
